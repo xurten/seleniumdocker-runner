@@ -1,0 +1,63 @@
+version: "3"
+services:
+        hub:
+                image: selenium/hub:latest
+                ports:
+                        - "4444:4444"
+        chrome:
+                image: selenium/node-chrome:latest
+                depends_on:
+                        - hub
+                environment:
+                        - HUB_HOST=hub
+        firefox:
+                image: selenium/node-firefox:latest
+                shm_size: '1gb'
+                depends_on:
+                        - hub
+                environment:
+                        - HUB_HOST=hub
+        search-module1:
+                image: xurten/selenium-docker
+                depends_on:
+                        - chrome
+                        - firefox
+                environment:
+                        - BROWSER=chrome
+                        - HUB_HOST=hub
+                        - MODULE=search-module.xml
+                volumes:
+                        - ./search-results-chrome-1:/usr/share/udemy/test-output
+        search-module2:
+                image: xurten/selenium-docker
+                depends_on:
+                        - chrome
+                        - firefox
+                environment:
+                        - BROWSER=firefox
+                        - HUB_HOST=hub
+                        - MODULE=search-module.xml
+                volumes:
+                        - ./search-results-firefox-2:/usr/share/udemy/test-output                
+        book-flight-module1:
+                image: xurten/selenium-docker
+                depends_on:
+                        - chrome
+                        - firefox
+                environment:
+                        - BROWSER=chrome
+                        - HUB_HOST=hub
+                        - MODULE=book-flight-module.xml
+                volumes:
+                        - ./book-result-chrome-1:/usr/share/udemy/test-output
+        book-flight-module2:
+                image: xurten/selenium-docker
+                depends_on:
+                        - chrome
+                        - firefox
+                environment:
+                        - BROWSER=firefox
+                        - HUB_HOST=hub
+                        - MODULE=book-flight-module.xml
+                volumes:
+                        - ./book-result-firefox-2:/usr/share/udemy/test-output                
